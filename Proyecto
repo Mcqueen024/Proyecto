@@ -1,0 +1,144 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#define MAX_PUEBLOS 100
+#define MAX_BEBIDAS 8
+
+// Prototipos de las funciones
+void inicializarMatriz(int arr[MAX_PUEBLOS][MAX_BEBIDAS]);
+void llenarMatriz(int arr[MAX_PUEBLOS][MAX_BEBIDAS]);
+void calcularTotalBebidas(int arr[MAX_PUEBLOS][MAX_BEBIDAS], int total[MAX_BEBIDAS]);
+int obtenerBebidaMasConsumida(int total[MAX_BEBIDAS]);
+void calcularTotalAlcohol(int arr[MAX_PUEBLOS][MAX_BEBIDAS], int total2[MAX_BEBIDAS]);
+int obtenerBebidaAlcoholMasConsumida(int total2[MAX_BEBIDAS]);
+void calcularPuebloMasAlcohol(int arr[MAX_PUEBLOS][MAX_BEBIDAS], int total3[MAX_PUEBLOS]);
+
+int main() {
+    int arr[MAX_PUEBLOS][MAX_BEBIDAS];
+    int total[MAX_BEBIDAS] = {0};
+    int total2[MAX_BEBIDAS] = {0};
+    int total3[MAX_PUEBLOS] = {0};
+
+    // Inicialización de la matriz
+    inicializarMatriz(arr);
+    printf("Se inicializo la matriz de forma correcta.\n");
+
+    // Llenado de la matriz con datos de los pueblos
+    llenarMatriz(arr);
+
+    // Calcular total de bebidas consumidas
+    calcularTotalBebidas(arr, total);
+
+    // Obtener la bebida más consumida
+    int bebida = obtenerBebidaMasConsumida(total);
+    printf("La bebida %d es la bebida que más se consume con %d litros.\n", bebida, total[bebida]);
+
+    // Calcular total de alcohol consumido (excluyendo refresco y energéticos)
+    calcularTotalAlcohol(arr, total2);
+
+    // Obtener la bebida alcohólica más consumida
+    int bebida2 = obtenerBebidaAlcoholMasConsumida(total2);
+    printf("La bebida alcohólica más consumida es la bebida %d con %d litros.\n", bebida2, total2[bebida2]);
+
+    // Calcular el pueblo que más alcohol consume
+    calcularPuebloMasAlcohol(arr, total3);
+
+    return 0;
+}
+
+// Función para inicializar la matriz a cero
+void inicializarMatriz(int arr[MAX_PUEBLOS][MAX_BEBIDAS]) {
+    for (int i = 0; i < MAX_PUEBLOS; i++) {
+        for (int j = 0; j < MAX_BEBIDAS; j++) {
+            arr[i][j] = 0;
+        }
+    }
+}
+
+// Función para llenar la matriz con la información de las bebidas
+void llenarMatriz(int arr[MAX_PUEBLOS][MAX_BEBIDAS]) {
+    int var1, var2;
+    for (int i = 0; i < MAX_PUEBLOS; i++) {
+        printf("Dame la bebida correspondiente del pueblo %d: ", i);
+        scanf("%d", &var1);
+        while (var1 != -1) {
+            printf("Dame la cantidad en litros: ");
+            scanf("%d", &var2);
+            arr[i][var1] = var2;
+            printf("Dame otra bebida: ");
+            scanf("%d", &var1);
+        }
+    }
+}
+
+// Función para calcular el total de litros consumidos por bebida
+void calcularTotalBebidas(int arr[MAX_PUEBLOS][MAX_BEBIDAS], int total[MAX_BEBIDAS]) {
+    for (int j = 0; j < MAX_BEBIDAS; j++) {
+        for (int i = 0; i < MAX_PUEBLOS; i++) {
+            total[j] += arr[i][j];
+        }
+    }
+}
+
+// Función para obtener la bebida más consumida
+int obtenerBebidaMasConsumida(int total[MAX_BEBIDAS]) {
+    int max = 0;
+    int bebida = 0;
+    for (int i = 0; i < MAX_BEBIDAS; i++) {
+        if (total[i] > max) {
+            max = total[i];
+            bebida = i;
+        }
+    }
+    return bebida;
+}
+
+// Función para calcular el total de alcohol consumido por bebida
+void calcularTotalAlcohol(int arr[MAX_PUEBLOS][MAX_BEBIDAS], int total2[MAX_BEBIDAS]) {
+    for (int i = 0; i < MAX_BEBIDAS; i++) {
+        if (i != 1 && i != 6) { // Excluir Refresco (1) y Energéticos (6)
+            int acum = 0;
+            for (int j = 0; j < MAX_PUEBLOS; j++) {
+                acum += arr[j][i];
+            }
+            total2[i] = acum;
+        }
+    }
+}
+
+// Función para obtener la bebida alcohólica más consumida
+int obtenerBebidaAlcoholMasConsumida(int total2[MAX_BEBIDAS]) {
+    int max2 = 0;
+    int bebida2 = 0;
+    for (int i = 0; i < MAX_BEBIDAS; i++) {
+        if (i != 1 && i != 6 && total2[i] > max2) {
+            max2 = total2[i];
+            bebida2 = i;
+        }
+    }
+    return bebida2;
+}
+
+// Función para calcular el pueblo que más alcohol consume
+void calcularPuebloMasAlcohol(int arr[MAX_PUEBLOS][MAX_BEBIDAS], int total3[MAX_PUEBLOS]) {
+    for (int i = 0; i < MAX_PUEBLOS; i++) {
+        int acum2 = 0;
+        for (int j = 0; j < MAX_BEBIDAS; j++) {
+            if (j != 1 && j != 6) { // Excluir Refresco (1) y Energéticos (6)
+                acum2 += arr[i][j];
+            }
+        }
+        total3[i] = acum2;
+    }
+
+    int max3 = 0;
+    int pueblo = 0;
+    for (int i = 0; i < MAX_PUEBLOS; i++) {
+        if (total3[i] > max3) {
+            max3 = total3[i];
+            pueblo = i;
+        }
+    }
+    printf("El pueblo %d consume más alcohol con %d litros.\n", pueblo, max3);
+}
